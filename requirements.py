@@ -1,0 +1,9 @@
+Jinja2==2.7
+MarkupSafe==0.18
+PyYAML==3.10
+argh==0.23.1
+easywatch==0.0.3
+pathtools==0.1.2
+staticjinja==0.1.1
+watchdog==0.6.0
+wsgiref==0.1.2
