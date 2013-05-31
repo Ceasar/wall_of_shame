@@ -1,13 +1,19 @@
+import csv
+
 from staticjinja import Renderer
 
 
+def parse_csv(filename):
+    """Parse a CSV into a list."""
+    with open(filename, 'rbU') as f:
+        return list(csv.DictReader(f))
+
+
 def index():
-    knights = [
-        'sir arthur',
-        'sir lancelot',
-        'sir galahad',
-    ]
-    return {'players': knights}
+    players = parse_csv('data/players.csv')
+    return {
+        'players': sorted(players, key=lambda p: int(p['score']), reverse=True)
+    }
 
 
 if __name__ == "__main__":
