@@ -27,7 +27,7 @@ COMMENT_END = "*/"
 # Regex to extract email from git blames
 EXTRACT_EMAIL_PATTERN = re.compile(r"^author-mail <(.+)>$")
 
-OUT_FILE = "foo.csv"
+OUT_FILE = "blames.csv"
 
 _NUM_WORKER_THREADS = 4
 
@@ -105,45 +105,42 @@ def main():
     blames = Queue()
     lines = Queue()
     filenames = Queue()
+
     lock = RLock()
 
     def fileworker():
-        while not filenames.empty():
+        while True:
             filename = filenames.get()
             for line_number, _ in gen_undocumented_public_methods(filename):
                 lines.put((filename, line_number))
             filenames.task_done()
 
     def blameworker():
-        while not lines.empty():
+        while True:
             filename, line_number = lines.get()
             blame = get_blame(filename, line_number)
             blames.put((blame, filename, line_number))
             lines.task_done()
 
     def mailworker():
-        while not blames.empty():
+        while True:
             blame, filename, line_number = blames.get()
             email = get_email_from_blame(blame)
             recipient, filename = email.split('@')[0], 'www' + filename[1:]
             with lock:
                 with open(OUT_FILE, "a") as f:
-                    f.write("%s,%s,%s" % (recipient, filename, line_number))
+                    f.write("%s,%s,%s\n" % (recipient, filename, line_number))
             blames.task_done()
 
     for path, dirs, files in os.walk('.'):
         for file in files:
             filename = os.path.join(path, file)
-            print filename
             if filename.endswith(".php"):
                 filenames.put(filename)
 
     threads = _start_daemons(fileworker, _NUM_WORKER_THREADS)
     threads.extend(_start_daemons(blameworker, _NUM_WORKER_THREADS))
     threads.extend(_start_daemons(mailworker, _NUM_WORKER_THREADS))
-
-    for thread in threads:
-        thread.join()
 
     filenames.join()
     lines.join()
