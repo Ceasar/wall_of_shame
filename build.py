@@ -1,4 +1,5 @@
 import csv
+import collections
 
 from staticjinja import Renderer
 
@@ -6,13 +7,23 @@ from staticjinja import Renderer
 def parse_csv(filename):
     """Parse a CSV into a list."""
     with open(filename, 'rbU') as f:
-        return list(csv.DictReader(f))
+        for line in csv.DictReader(f):
+            yield line
 
 
 def index():
-    players = parse_csv('data/players.csv')
+    counter = collections.defaultdict(list)
+    for player in parse_csv('data/players.csv'):
+        counter[player['name']].append({
+            'file': player['file'],
+            'line': player['line']
+        })
+
+    players = ({'name': k, 'score': len(v), 'methods': sorted(v)}
+               for k, v in counter.iteritems())
     return {
-        'players': sorted(players, key=lambda p: int(p['score']), reverse=True)
+        'players': sorted(players,
+                          key=lambda p: int(p['score']), reverse=True)
     }
 
 
