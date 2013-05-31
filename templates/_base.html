@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Wall of Shame{% endblock %}</title>
+        <link rel="stylesheet" href="/lib/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="/css/scaffolding.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="lib/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="css/scaffolding.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="../lib/css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="../css/scaffolding.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    </head>
+    <body>
+        {% block body %}
+        {% endblock %}
+        {% block scripts %}
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        {% endblock %}
+    </body>
+</html>

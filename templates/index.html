@@ -1,0 +1,11 @@
+{% extends "_base.html" %}
+
+{% block body %}
+<h1>The Wall of Shame</h1>
+<p>This leaderboard keeps track of the people with the most undocumented public methods in the Facebook codebase.</p>
+<ol>
+{% for player in players %}
+<li>Yes</li>
+{% endfor %}
+</ol>
+{% endblock %}
